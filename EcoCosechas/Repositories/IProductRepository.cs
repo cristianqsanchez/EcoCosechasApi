@@ -10,7 +10,7 @@ namespace EcoCosechas.Repositories
         Task<Producto> Create(Producto producto);
 
         Task<Producto?> GetById(int id);
-        Task<IEnumerable<Producto>> List();
+        Task<List<Producto>> List();
 
         Task<bool> Update(Producto producto);
 

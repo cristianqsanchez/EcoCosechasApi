@@ -1,5 +1,8 @@
 using System.Runtime.InteropServices;
+using AutoMapper;
+using EcoCosechas.DTOs;
 using EcoCosechas.Models;
+using EcoCosechas.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,15 +17,14 @@ builder.Services.AddCors(opciones =>
     {
         configuracion.WithOrigins(allowOrigins).AllowAnyHeader().AllowAnyMethod();
     });
-
-    opciones.AddPolicy("libre", configuracion =>
-    {
-        configuracion.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-    });
 });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 
@@ -34,12 +36,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/products", async (EcoContext context) =>
+app.MapGet("/products", async (IProductRepository repository, IMapper mapper) =>
 {
-    var products = await context.Productos
-    .ToListAsync();
-
-    return products;
+    var products = await repository.List();
+    var productsDTO = mapper.Map<List<ProductoDTO>>(products);
+    return productsDTO;
 });
 
 app.Run();
