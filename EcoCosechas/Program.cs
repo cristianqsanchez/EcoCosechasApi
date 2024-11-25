@@ -55,7 +55,8 @@ app.MapGet("/products/{id:int}", async (int id, IProductRepository repository, I
         return Results.NotFound();
     }
 
-    return Results.Ok(product);
+    var productDTO = mapper.Map<ProductoDTO>(product);
+    return Results.Ok(productDTO);
 });
 
 app.Run();

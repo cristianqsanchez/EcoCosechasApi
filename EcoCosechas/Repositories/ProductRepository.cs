@@ -24,7 +24,11 @@ namespace EcoCosechas.Repositories
 
         public async Task<Producto?> GetById(int id)
         {
-            return await context.Productos.FirstOrDefaultAsync(p => p.Id == id);
+            return await context.Productos
+                .Include(p => p.Subcategoria)
+                .Include(p => p.Marca)
+                .Include(p => p.Unidad)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<List<Producto>> List()
