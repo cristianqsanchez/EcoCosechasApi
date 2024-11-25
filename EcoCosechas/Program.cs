@@ -3,6 +3,7 @@ using AutoMapper;
 using EcoCosechas.DTOs;
 using EcoCosechas.Models;
 using EcoCosechas.Repositories;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +25,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
@@ -40,7 +43,19 @@ app.MapGet("/products", async (IProductRepository repository, IMapper mapper) =>
 {
     var products = await repository.List();
     var productsDTO = mapper.Map<List<ProductoDTO>>(products);
-    return productsDTO;
+    return Results.Ok(productsDTO);
+});
+
+app.MapGet("/products/{id:int}", async (int id, IProductRepository repository, IMapper mapper) =>
+{
+    var product = await repository.GetById(id);
+
+    if (product is null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Ok(product);
 });
 
 app.Run();

@@ -22,9 +22,9 @@ namespace EcoCosechas.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Producto?> GetById(int id)
+        public async Task<Producto?> GetById(int id)
         {
-            throw new NotImplementedException();
+            return await context.Productos.FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<List<Producto>> List()
