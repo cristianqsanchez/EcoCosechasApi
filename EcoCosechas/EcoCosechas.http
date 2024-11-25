@@ -1,0 +1,6 @@
+@EcoCosechas_HostAddress = http://localhost:5212
+
+GET {{EcoCosechas_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
