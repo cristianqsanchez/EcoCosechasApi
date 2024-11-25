@@ -14,9 +14,10 @@ namespace EcoCosechas.Endpoints
             return group;
         }
 
-        static async Task<Ok<List<ProductoDTO>>> ListProducts(IProductRepository repository, IMapper mapper)
+        static async Task<Ok<List<ProductoDTO>>> ListProducts(IProductRepository repository, IMapper mapper, int page = 1, int recordsPerPage = 50)
         {
-            var products = await repository.List();
+            var pagination = new PaginationDTO { Page = page, RecordsPerPage = recordsPerPage };
+            var products = await repository.List(pagination);
             var productsDTO = mapper.Map<List<ProductoDTO>>(products);
             return TypedResults.Ok(productsDTO);
         }

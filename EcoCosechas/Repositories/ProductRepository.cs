@@ -1,4 +1,6 @@
-﻿using EcoCosechas.Models;
+﻿using EcoCosechas.DTOs;
+using EcoCosechas.Models;
+using EcoCosechas.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EcoCosechas.Repositories
@@ -31,12 +33,14 @@ namespace EcoCosechas.Repositories
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<List<Producto>> List()
+        public async Task<List<Producto>> List(PaginationDTO paginationDTO)
         {
-            return await context.Productos
+            var queryable = context.Productos.AsQueryable();
+            return await queryable
                 .Include(p => p.Subcategoria)
                 .Include(p => p.Marca)
                 .Include(p => p.Unidad)
+                .Paginate(paginationDTO)
                 .ToListAsync();
         }
 
